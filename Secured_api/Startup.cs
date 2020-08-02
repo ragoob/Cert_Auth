@@ -31,8 +31,7 @@ namespace Secured_api
      CertificateAuthenticationDefaults.AuthenticationScheme)
      .AddCertificate(options =>
      {
-         options.ValidateCertificateUse = true;
-         options.ValidateValidityPeriod = true;
+        
          options.Events = new CertificateAuthenticationEvents
          {
              OnCertificateValidated = context =>
@@ -65,7 +64,7 @@ namespace Secured_api
         // This method gets called by the runtime. Use this method to configure the HTTP request pipeline.
         public void Configure(IApplicationBuilder app, IWebHostEnvironment env)
         {
-            app.UseAuthentication();
+           
 
             if (env.IsDevelopment())
             {
@@ -76,7 +75,9 @@ namespace Secured_api
             app.UseHttpsRedirection();
 
             app.UseRouting();
+            app.UseCertificateForwarding();
 
+            app.UseAuthentication();
             app.UseAuthorization();
 
             app.UseEndpoints(endpoints =>
