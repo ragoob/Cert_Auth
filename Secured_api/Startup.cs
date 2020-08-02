@@ -31,6 +31,8 @@ namespace Secured_api
      CertificateAuthenticationDefaults.AuthenticationScheme)
      .AddCertificate(options =>
      {
+         options.ValidateCertificateUse = true;
+         options.ValidateValidityPeriod = true;
          options.Events = new CertificateAuthenticationEvents
          {
              OnCertificateValidated = context =>
