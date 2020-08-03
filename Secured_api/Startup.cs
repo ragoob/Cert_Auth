@@ -35,7 +35,7 @@ namespace Secured_api
          options.Events = new CertificateAuthenticationEvents
          {
              OnCertificateValidated = context =>
-             {
+             {               
                  var claims = new[]
                  {
                     new Claim(
@@ -54,7 +54,14 @@ namespace Secured_api
                  context.Success();
 
                  return Task.CompletedTask;
+             },
+
+             OnAuthenticationFailed = context =>
+             {
+                 context.Fail("Certificate validation failed");
+                 return Task.CompletedTask;
              }
+            
          };
      });
 
