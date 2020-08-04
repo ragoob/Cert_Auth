@@ -38,7 +38,7 @@ FROM mcr.microsoft.com/dotnet/core/aspnet:3.1-alpine
 
 COPY --from=cert /bin/mkcert /bin/mkcert
 # root cert but not root private key:
-COPY --from=cert /root/.local/share/mkcert/rootCA.pem /root/.local/share/mkcert/gd_bundle-g2-g1.crt
+COPY --from=cert /root/.local/share/mkcert/gd_bundle-g2-g1.crt /root/.local/share/mkcert/gd_bundle-g2-g1.crt
 COPY --from=cert /root/.local/share/mkcert/serveraptardotcomapi.pfx /app/
 # TODO: consider `chmod 600 *.pem and *.pfx`
 
