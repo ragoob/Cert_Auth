@@ -39,11 +39,11 @@ FROM mcr.microsoft.com/dotnet/core/aspnet:3.1-alpine
 COPY --from=cert /bin/mkcert /bin/mkcert
 # root cert but not root private key:
 COPY --from=cert /root/.local/share/mkcert/gd_bundle-g2-g1.crt /root/.local/share/mkcert/gd_bundle-g2-g1.crt
-COPY --from=cert /root/.local/share/mkcert/serveraptardotcomapi.pfx /app/
+COPY --from=cert /root/.local/share/mkcert/aptardotcomapi.pfx /app/
 # TODO: consider `chmod 600 *.pem and *.pfx`
 
 # tell ASP.NET Core to use the cert
-ENV Kestrel__Certificates__Default__Path=/app/serveraptardotcomapi.pfx
+ENV Kestrel__Certificates__Default__Path=/app/aptardotcomapi.pfx
 ENV Kestrel__Certificates__Default__Password=https-api
 
 # trust root cert
