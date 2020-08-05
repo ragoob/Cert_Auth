@@ -11,15 +11,15 @@ RUN cd /go && \
 
 WORKDIR /root/.local/share/mkcert
 # copied from %localappdata%\mkcert
-COPY rootCA*.pem /root/.local/share/mkcert/
-
+COPY fa86e37d418a393e.crt /root/.local/share/mkcert/
+COPY serveraptardotcomapi.key /root/.local/share/mkcert/
 # make a pfx with known password by making a pem/key then converting it
 # includes minikube and docker ips
-RUN mkcert -install \
-    && mkcert -key-file https-api.key -cert-file https-api.pem minikube 52.249.199.70 localhost 127.0.0.1 api \
-    && openssl pkcs12 -export -out https-api.pfx -inkey https-api.key -in https-api.pem -certfile rootCA.pem -passout pass:https-api
+#RUN mkcert -install \
+    #&& mkcert -key-file https-api.key -cert-file https-api.pem minikube 52.249.199.70 localhost 127.0.0.1 api \
+    #&& openssl pkcs12 -export -out https-api.pfx -inkey https-api.key -in https-api.pem -certfile rootCA.pem -passout pass:https-api
 
-
+RUN openssl pkcs12 -export -out https-api.pfx -inkey  serveraptardotcomapi.key -in fa86e37d418a393e.crt  -passout pass:https-api
 FROM mcr.microsoft.com/dotnet/core/sdk:3.1-alpine as build
 
 WORKDIR /src
@@ -35,7 +35,7 @@ FROM mcr.microsoft.com/dotnet/core/aspnet:3.1-alpine
 
 COPY --from=cert /bin/mkcert /bin/mkcert
 # root cert but not root private key:
-COPY --from=cert /root/.local/share/mkcert/rootCA.pem /root/.local/share/mkcert/rootCA.pem
+#COPY --from=cert /root/.local/share/mkcert/rootCA.pem /root/.local/share/mkcert/rootCA.pem
 COPY --from=cert /root/.local/share/mkcert/https-api.pfx /app/
 # TODO: consider `chmod 600 *.pem and *.pfx`
 
@@ -44,12 +44,12 @@ ENV Kestrel__Certificates__Default__Path=/app/https-api.pfx
 ENV Kestrel__Certificates__Default__Password=https-api
 
 # trust root cert
-RUN apk update \
-    && apk add nss-tools \
-    && rm -rf /var/cache/apk/* \
-    && mkcert -install \
-    && apk del nss-tools \
-    && rm -rf /bin/mkcert
+#RUN apk update \
+    #&& apk add nss-tools \
+    #&& rm -rf /var/cache/apk/* \
+    #&& mkcert -install \
+    #&& apk del nss-tools \
+    #&& rm -rf /bin/mkcert
 
 WORKDIR /app
 COPY --from=build /dist /app
